@@ -92,3 +92,5 @@ Temporary Items
 
 # Created by .ignore support plugin (hsz.mobi)
 .project
+
+*.zip
