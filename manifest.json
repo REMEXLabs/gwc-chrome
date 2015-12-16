@@ -16,13 +16,18 @@
     "matches": [
       "*://*.domain.lan/*",
       "*://160.40.50.183/*",
+      "*://localhost/*",
       "*://*.cloud4all.info/*"
     ]
   },
+  "permissions": [
+    "http://localhost/*",
+    "http://127.0.0.1:3030/*"
+  ],
   "background": {
     "scripts": [
       "background.js",
-      "lib/socket.io.js"
+      "lib/socket.io.137.js"
     ]
   }
 }

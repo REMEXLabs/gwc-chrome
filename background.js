@@ -14,16 +14,25 @@
  * https://github.com/javihernandez/gwc-chrome/blob/master/LICENSE.txt
  */
 
-var socketServer = 'http://localhost:8081/browserChannel';
+//var socketServer = 'http://localhost:8081/browserChannel';
+var socketServer = 'http://127.0.0.1:3030';
 var allSettings = {};
 
 function connectToGPII (port) {
+
     // Here we will replace port.solutionId with port.sender.url
     var solutionId = port.solutionId;
-    var socket = io.connect(socketServer, {'force new connection': true});
+  //  var socket = io.connect(socketServer, {'force new connection': true});
+    var socket = io.connect(socketServer);
 
     socket.on("connect", function (data) {
         socket.send(solutionId);
+    });
+
+    socket.on("gpii_update", function (data) {
+        console.log("getting a GPII (settings) update"+data);
+        console.dir(data);
+        port.postMessage({settings: data});
     });
 
     socket.on("connectionSucceeded", function (settings) {
@@ -38,7 +47,7 @@ function connectToGPII (port) {
         port.postMessage({settings: settings});
     });
 
-    socket.socket.on("disconnect", function (request) {
+    socket.on("disconnect", function (request) {
         // We can tell the website what's going on
         console.log("## on disconnect: " + request);
     });
@@ -71,7 +80,9 @@ function extractDomain (url) {
 }
 
 chrome.runtime.onConnectExternal.addListener(function (port) {
+
     port.onMessage.addListener(function (msg) {
+
         if (msg.type === "connectionRequest") {
             // Right now, we only check that the solutionId coming from the website
             // matches the domain. Also, we can ask to our privacy system whether this
